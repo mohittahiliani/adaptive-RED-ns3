@@ -145,6 +145,34 @@ public:
   uint32_t GetQueueSize (void);
 
   /**
+   * \brief Set the alpha value for Adaptive RED.
+   *
+   * \param alpha The value of alpha for Adaptive RED.
+   */
+  void SetAredAlpha (double alpha);
+
+  /**
+   * \brief Get the alpha value for Adaptive RED.
+   *
+   * \returns The alpha value for Adaptive RED.
+   */
+  double GetAredAlpha (void);
+
+  /**
+   * \brief Set the beta value for Adaptive RED.
+   *
+   * \param beta The value of beta for Adaptive RED.
+   */
+  void SetAredBeta (double beta);
+
+  /**
+   * \brief Get the beta value for Adaptive RED.
+   *
+   * \returns The beta value for Adaptive RED.
+   */
+  double GetAredBeta (void);
+
+  /**
    * \brief Set the limit of the queue.
    *
    * \param lim The limit in bytes or packets.
@@ -200,6 +228,12 @@ private:
    */
   double Estimator (uint32_t nQueued, uint32_t m, double qAvg, double qW);
   /**
+   * \brief Update the maximum drop probability.
+   * \param newAve new average queue length
+   * \param now Current Time
+   */
+  void UpdateMaxP (double newAve, Time now);
+  /**
    * \brief Check if packet p needs to be dropped due to probability mark
    * \param p packet
    * \param qSize queue size
@@ -245,11 +279,19 @@ private:
   uint32_t m_idlePktSize;   //!< Avg pkt size used during idle times
   bool m_isWait;            //!< True for waiting between dropped packets
   bool m_isGentle;          //!< True to increases dropping prob. slowly when ave queue exceeds maxthresh
+  bool m_isAdaptive;        //!< True to enable Adaptive RED
   double m_minTh;           //!< Min avg length threshold (bytes)
   double m_maxTh;           //!< Max avg length threshold (bytes), should be >= 2*minTh
   uint32_t m_queueLimit;    //!< Queue limit in bytes / packets
   double m_qW;              //!< Queue weight given to cur queue size sample
   double m_lInterm;         //!< The max probability of dropping a packet
+  Time m_targetDelay;       //!< Target average queuing delay in Adaptive RED
+  Time m_interval;          //!< Time period to calculate maximum drop probability in Adaptive RED
+  double m_top;             //!< Upper bound for maximum drop probability in Adaptive RED
+  double m_bottom;          //!< Lower bound for maximum drop probability in Adaptive RED
+  double m_alpha;           //!< Increment parameter for maximum drop probability in Adaptive RED
+  double m_beta;            //!< Decrement parameter for maximum drop probability in Adaptive RED
+  Time m_rtt;               //!< Rtt to be considered while automatically setting m_bottom in Adaptive RED
   bool m_isNs1Compat;       //!< Ns-1 compatibility
   DataRate m_linkBandwidth; //!< Link bandwidth
   Time m_linkDelay;         //!< Link delay
@@ -261,6 +303,7 @@ private:
   double m_vC;              //!< (1.0 - m_curMaxP) / m_maxTh - used in "gentle" mode
   double m_vD;              //!< 2.0 * m_curMaxP - 1.0 - used in "gentle" mode
   double m_curMaxP;         //!< Current max_p
+  Time m_lastSet;           //!< Last time maximum drop probability was adapted in Adaptive RED
   double m_vProb;           //!< Prob. of packet drop
   uint32_t m_countBytes;    //!< Number of bytes since last drop
   uint32_t m_old;           //!< 0 when average queue first exceeds threshold

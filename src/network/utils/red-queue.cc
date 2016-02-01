@@ -103,6 +103,11 @@ TypeId RedQueue::GetTypeId (void)
                    BooleanValue (true),
                    MakeBooleanAccessor (&RedQueue::m_isGentle),
                    MakeBooleanChecker ())
+    .AddAttribute ("Adaptive",
+                   "True to enable Adaptive RED",
+                   BooleanValue (false),
+                   MakeBooleanAccessor (&RedQueue::m_isAdaptive),
+                   MakeBooleanChecker ())
     .AddAttribute ("MinTh",
                    "Minimum average length threshold in packets/bytes",
                    DoubleValue (5),
@@ -128,6 +133,46 @@ TypeId RedQueue::GetTypeId (void)
                    DoubleValue (50),
                    MakeDoubleAccessor (&RedQueue::m_lInterm),
                    MakeDoubleChecker <double> ())
+    .AddAttribute ("TargetDelay",
+                   "Target average queuing delay in Adaptive RED",
+                   TimeValue (Seconds (0.005)),
+                   MakeTimeAccessor (&RedQueue::m_targetDelay),
+                   MakeTimeChecker ())
+    .AddAttribute ("Interval",
+                   "Time period to calculate maximum drop probability in Adaptive RED",
+                   TimeValue (Seconds (0.5)),
+                   MakeTimeAccessor (&RedQueue::m_interval),
+                   MakeTimeChecker ())
+    .AddAttribute ("Top",
+                   "Upper bound for maximum drop probability in Adaptive RED",
+                   DoubleValue (0.5),
+                   MakeDoubleAccessor (&RedQueue::m_top),
+                   MakeDoubleChecker <double> (0, 1))
+    .AddAttribute ("Bottom",
+                   "Lower bound for maximum drop probability in Adaptive RED",
+                   DoubleValue (0.0),
+                   MakeDoubleAccessor (&RedQueue::m_bottom),
+                   MakeDoubleChecker <double> (0, 1))
+    .AddAttribute ("Alpha",
+                   "Increment parameter for maximum drop probability in Adaptive RED",
+                   DoubleValue (0.01),
+                   MakeDoubleAccessor (&RedQueue::SetAredAlpha),
+                   MakeDoubleChecker <double> (0, 1))
+    .AddAttribute ("Beta",
+                   "Decrement parameter for maximum drop probability in Adaptive RED",
+                   DoubleValue (0.9),
+                   MakeDoubleAccessor (&RedQueue::SetAredBeta),
+                   MakeDoubleChecker <double> (0, 1))
+    .AddAttribute ("LastSet",
+                   "Store the last time maximum drop probability was updated",
+                   TimeValue (Seconds (0.0)),
+                   MakeTimeAccessor (&RedQueue::m_lastSet),
+                   MakeTimeChecker ())
+    .AddAttribute ("Rtt",
+                   "Round Trip Time to be considered while automatically setting m_bottom",
+                   TimeValue (Seconds (0.1)),
+                   MakeTimeAccessor (&RedQueue::m_rtt),
+                   MakeTimeChecker ())
     .AddAttribute ("Ns1Compat",
                    "NS-1 compatibility",
                    BooleanValue (false),
@@ -175,6 +220,44 @@ RedQueue::GetMode (void)
 {
   NS_LOG_FUNCTION (this);
   return m_mode;
+}
+
+void
+RedQueue::SetAredAlpha (double alpha)
+{
+  NS_LOG_FUNCTION (this << alpha);
+  m_alpha = alpha;
+
+  if (m_alpha < 0 || m_alpha > 0.01)
+    {
+      NS_LOG_WARN ("Alpha value is out of recommended bounds!");
+    }
+}
+
+double
+RedQueue::GetAredAlpha (void)
+{
+  NS_LOG_FUNCTION (this);
+  return m_alpha;
+}
+
+void
+RedQueue::SetAredBeta (double beta)
+{
+  NS_LOG_FUNCTION (this << beta);
+  m_beta = beta;
+
+  if (m_beta < 0.83)
+    {
+      NS_LOG_WARN ("Beta value is below the recommended bound!");
+    }
+}
+
+double
+RedQueue::GetAredBeta (void)
+{
+  NS_LOG_FUNCTION (this);
+  return m_beta;
 }
 
 void
@@ -405,7 +488,36 @@ RedQueue::InitializeParams (void)
       m_qW = 1.0 - std::exp (-10.0 / m_ptc);
     }
 
-  /// \todo implement adaptive RED
+  if (m_minTh == 0) 
+    {
+      m_minTh = 5.0;
+      // set m_minTh to max(m_minTh, targetqueue/2.0) [Ref: http://www.icir.org/floyd/papers/adaptiveRed.pdf]
+      double targetqueue = m_targetDelay.GetSeconds() * m_ptc;
+      if (m_minTh < targetqueue / 2.0 )
+        {
+          m_minTh = targetqueue / 2.0;
+        }
+    }
+
+  if (m_maxTh == 0)
+    {
+      // set m_maxTh to three times m_minTh [Ref: http://www.icir.org/floyd/papers/adaptiveRed.pdf]
+      m_maxTh = 3 * m_minTh;
+    }
+
+  if (m_bottom == 0)
+    {
+      m_bottom = 0.01;
+      // Set bottom to at most 1/W, for W the delay-bandwidth
+      // product in packets for a connection with this bandwidth,
+      // 1000-byte packets, and 100 ms RTTs.
+      // So W = 0.1 * m_linkBandwidth.GetBitRate () / 8000
+      double bottom1 = (8.0 * m_meanPktSize * m_rtt.GetSeconds()) / m_linkBandwidth.GetBitRate();
+      if (bottom1 < m_bottom)
+        {
+          m_bottom = bottom1;
+        }
+    }
 
   NS_LOG_DEBUG ("\tm_delay " << m_linkDelay.GetSeconds () << "; m_isWait " 
                              << m_isWait << "; m_qW " << m_qW << "; m_ptc " << m_ptc
@@ -414,6 +526,32 @@ RedQueue::InitializeParams (void)
                              << "; lInterm " << m_lInterm << "; va " << m_vA <<  "; cur_max_p "
                              << m_curMaxP << "; v_b " << m_vB <<  "; m_vC "
                              << m_vC << "; m_vD " <<  m_vD);
+}
+
+// Updating maximum drop probability to keep the average queue size within the target range.
+// This is called only for Adaptive RED.
+void
+RedQueue::UpdateMaxP (double newAve, Time now)
+{
+  double m_part = 0.4 * (m_maxTh - m_minTh);
+  // AIMD rule to keep target Q~1/2(m_minTh + m_maxTh)
+  if (newAve < m_minTh + m_part && m_curMaxP > m_bottom)
+    {
+      // we increase the average queue size, so decrease maximum drop probability
+      m_curMaxP = m_curMaxP * m_beta;
+      m_lastSet = now;
+    } 
+  else if (newAve > m_maxTh - m_part && m_top > m_curMaxP) 
+    {
+      // we decrease the average queue size, so increase maximum drop probability
+      double alpha = m_alpha;
+      if (alpha > 0.25 * m_curMaxP)
+        {
+          alpha = 0.25 * m_curMaxP;
+        }
+      m_curMaxP = m_curMaxP + alpha;
+      m_lastSet = now;
+    }
 }
 
 // Compute the average queue size
@@ -431,8 +569,12 @@ RedQueue::Estimator (uint32_t nQueued, uint32_t m, double qAvg, double qW)
   newAve *= 1.0 - qW;
   newAve += qW * nQueued;
 
-  // implement adaptive RED
-
+  Time now = Simulator::Now();
+  if (m_isAdaptive && now > m_lastSet + m_interval)
+    {
+      UpdateMaxP(newAve, now);
+    }
+    
   return newAve;
 }
 
