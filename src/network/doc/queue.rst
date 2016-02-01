@@ -12,6 +12,7 @@ NetDevice models, that are maintained as part of the ``network`` module:
 
 * DropTail
 * Random Early Detection 
+* Adaptive Random Early Detection
 
 Model Description
 *****************
@@ -64,16 +65,22 @@ rather than with a bunch of tail-drop losses (possibly incurring
 TCP timeout).  The model in ns-3 is a port of Sally Floyd's ns-2
 RED model.
 
-Scope and Limitations
-=====================
+Adaptive Random Early Detection
+###############################
 
-The RED model just supports default RED.  Adaptive RED is not supported.
+Adaptive Random Early Detection (ARED) is a queue variant of RED that aims
+to (i) automatically set the Queue weight, MinTh and MaxTh in RED and
+(ii) adapt maximum drop probability in RED. The model in ns-3 is a port of
+Sally Floyd's ns-2 ARED model.
 
 References
 ==========
 
 The RED queue aims to be close to the results cited in:
 S.Floyd, K.Fall http://icir.org/floyd/papers/redsims.ps
+
+ARED queue implementation is based on the algorithm provided in:
+S. Floyd et al, http://www.icir.org/floyd/papers/adaptiveRed.pdf
 
 Usage
 *****
@@ -106,6 +113,16 @@ from ``src/network/examples/red-tests.cc``:
   p2p.SetChannelAttribute ("Delay", StringValue (redLinkDelay));
   NetDeviceContainer devn2n3 = p2p.Install (n2n3);
 
+In addition, to switch to ARED: Queue Weight, MinTh and MaxTh should be set
+to 0, and adaptive mode set to 'true', as done in this example
+from ``src/network/examples/adaptive-red-tests.cc``:
+
+.. sourcecode:: cpp
+
+  Config::SetDefault ("ns3::RedQueue::QW", DoubleValue (0.0));
+  Config::SetDefault ("ns3::RedQueue::MinTh", DoubleValue (0));
+  Config::SetDefault ("ns3::RedQueue::MaxTh", DoubleValue (0));
+  Config::SetDefault ("ns3::RedQueue::Adaptive", BooleanValue (true));
 
 Attributes
 ==========
@@ -124,6 +141,18 @@ policies:
 * LInterm
 * LinkBandwidth
 * LinkDelay
+
+In addition to RED attributes, ARED queue requires following attributes:
+
+* Adaptive mode
+* Target Delay
+* Interval
+* LastSet (time)
+* Top
+* Bottom
+* Alpha
+* Beta
+* RTT
 
 Consult the ns-3 documentation for explanation of these attributes.
 
@@ -155,7 +184,8 @@ Examples
 
 The drop-tail queue is used in several examples, such as 
 ``examples/udp/udp-echo.cc``.  The RED queue example is found at
-``src/network/examples/red-tests.cc``.
+``src/network/examples/red-tests.cc``. ARED queue example can be found at
+``src/network/examples/adaptive-red-tests.cc``.
 
 Validation
 **********
