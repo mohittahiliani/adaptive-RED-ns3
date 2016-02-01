@@ -11,6 +11,19 @@ cpp_examples = [
     ("main-packet-header", "True", "True"),
     ("main-packet-tag", "True", "True"),
     ("red-tests", "True", "True"),
+    ("red_vs_ared --queueType=RED", "True", "True"),
+    ("red_vs_ared --queueType=ARED", "True", "True"),
+    ("adaptive-red-tests --testNumber=1", "True", "True"),
+    ("adaptive-red-tests --testNumber=2", "True", "True"),
+    ("adaptive-red-tests --testNumber=6", "True", "True"),
+    ("adaptive-red-tests --testNumber=7", "True", "True"),
+    ("adaptive-red-tests --testNumber=8", "True", "True"),
+    ("adaptive-red-tests --testNumber=9", "True", "True"),
+    ("adaptive-red-tests --testNumber=10", "True", "True"),
+    ("adaptive-red-tests --testNumber=12", "True", "True"),
+    ("adaptive-red-tests --testNumber=13", "True", "True"),
+    ("adaptive-red-tests --testNumber=14", "True", "True"),
+    ("adaptive-red-tests --testNumber=15", "True", "True"),
 ]
 
 # A list of Python examples to run in order to ensure that they remain
