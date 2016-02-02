@@ -151,14 +151,6 @@ RedQueueTestCase::RunRedTest (StringValue mode)
     uint32_t test5;
     uint32_t test6;
     uint32_t test7;
-    uint32_t test8;
-    uint32_t test9;
-    uint32_t test10;
-    uint32_t test11;
-    uint32_t test12;
-    uint32_t test13;
-    uint32_t test14;
-    uint32_t test15;
   } drop;
 
 
@@ -258,8 +250,8 @@ RedQueueTestCase::RunRedTest (StringValue mode)
   st = StaticCast<RedQueue> (queue)->GetStats ();
   drop.test7 = st.unforcedDrop + st.forcedDrop + st.qLimDrop;
   NS_TEST_EXPECT_MSG_GT (drop.test7, drop.test3, "Test 7 should have more drops than test 3");
-  
-  
+
+
   // test 8: Verify automatic setting of QW. [QW = 0.0 with default LinkBandwidth]
   queue = CreateObject<RedQueue> ();
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
@@ -271,14 +263,24 @@ RedQueueTestCase::RunRedTest (StringValue mode)
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QueueLimit", UintegerValue (qSize)), true,
                          "Verify that we can actually set the attribute QueueLimit");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QW", DoubleValue (0.0)), true,
-                         "Verify that we can actually set the attribute QW");	
+                         "Verify that we can actually set the attribute QW");
   Enqueue (queue, pktSize, 300);
   st = StaticCast<RedQueue> (queue)->GetStats ();
-  drop.test8 = st.unforcedDrop + st.forcedDrop + st.qLimDrop;
-  NS_TEST_EXPECT_MSG_EQ (drop.test8, 0, "There should be zero dropped packets");
-  
-  
-  // test 9: Verify automatic setting of QW. [QW = 0.0 with lesser LinkBandwidth] 
+  if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be zero dropped packets due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
+    }
+  else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be zero bytes dropped due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+    }
+
+
+  // test 9: Verify automatic setting of QW. [QW = 0.0 with lesser LinkBandwidth]
   queue = CreateObject<RedQueue> ();
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
                          "Verify that we can actually set the attribute Mode");
@@ -291,13 +293,23 @@ RedQueueTestCase::RunRedTest (StringValue mode)
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QW", DoubleValue (0.0)), true,
                          "Verify that we can actually set the attribute QW");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("LinkBandwidth", DataRateValue (DataRate ("0.015Mbps"))), true,
-                         "Verify that we can actually set the attribute LinkBandwidth");	
+                         "Verify that we can actually set the attribute LinkBandwidth");
   Enqueue (queue, pktSize, 300);
   st = StaticCast<RedQueue> (queue)->GetStats ();
-  drop.test9 = st.unforcedDrop + st.forcedDrop + st.qLimDrop;
-  NS_TEST_EXPECT_MSG_GT (drop.test9, drop.test3, "Test 9 should have more drops than test 3");
-  
-  
+  if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 44, "There should be 44 packet drops due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
+    }
+  else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 75, "There should be 75 bytes dropped due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+    }
+
+
   // test 10: Verify automatic setting of QW. [QW = -1.0 with default LinkBandwidth]
   queue = CreateObject<RedQueue> ();
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
@@ -309,14 +321,24 @@ RedQueueTestCase::RunRedTest (StringValue mode)
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QueueLimit", UintegerValue (qSize)), true,
                          "Verify that we can actually set the attribute QueueLimit");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QW", DoubleValue (-1.0)), true,
-                         "Verify that we can actually set the attribute QW");	
+                         "Verify that we can actually set the attribute QW");
   Enqueue (queue, pktSize, 300);
   st = StaticCast<RedQueue> (queue)->GetStats ();
-  drop.test10 = st.unforcedDrop + st.forcedDrop + st.qLimDrop;
-  NS_TEST_EXPECT_MSG_EQ (drop.test10, 0, "There should be zero dropped packets");
-  
-  
-  // test 11: Verify automatic setting of QW. [QW = -1.0 with lesser LinkBandwidth] 
+  if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be zero dropped packets due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
+    }
+  else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be zero bytes dropped due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+    }
+
+
+  // test 11: Verify automatic setting of QW. [QW = -1.0 with lesser LinkBandwidth]
   queue = CreateObject<RedQueue> ();
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
                          "Verify that we can actually set the attribute Mode");
@@ -332,10 +354,20 @@ RedQueueTestCase::RunRedTest (StringValue mode)
                          "Verify that we can actually set the attribute LinkBandwidth");	
   Enqueue (queue, pktSize, 300);
   st = StaticCast<RedQueue> (queue)->GetStats ();
-  drop.test11 = st.unforcedDrop + st.forcedDrop + st.qLimDrop;
-  NS_TEST_EXPECT_MSG_LT (drop.test11, drop.test9, "Test 11 should have less drops than test 9");
-  
-  
+  if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 34, "There should be 34 packet drops due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
+    }
+  else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 58, "There should be 58 bytes dropped due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+    }
+
+
   // test 12: Verify automatic setting of QW. [QW = -2.0 with default LinkBandwidth]
   queue = CreateObject<RedQueue> ();
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
@@ -347,11 +379,21 @@ RedQueueTestCase::RunRedTest (StringValue mode)
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QueueLimit", UintegerValue (qSize)), true,
                          "Verify that we can actually set the attribute QueueLimit");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QW", DoubleValue (-2.0)), true,
-                         "Verify that we can actually set the attribute QW");	
+                         "Verify that we can actually set the attribute QW");
   Enqueue (queue, pktSize, 300);
   st = StaticCast<RedQueue> (queue)->GetStats ();
-  drop.test12 = st.unforcedDrop + st.forcedDrop + st.qLimDrop;
-  NS_TEST_EXPECT_MSG_GT (drop.test12, drop.test3, "Test 12 should have more drops than test 3");
+  if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 29, "There should be 29 packet drops due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
+    }
+  else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 55, "There should be 55 bytes dropped due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+    }
   
   
   // test 13: Verify automatic setting of QW. [QW = -2.0 with lesser LinkBandwidth] 
@@ -370,10 +412,20 @@ RedQueueTestCase::RunRedTest (StringValue mode)
                          "Verify that we can actually set the attribute LinkBandwidth");	
   Enqueue (queue, pktSize, 300);
   st = StaticCast<RedQueue> (queue)->GetStats ();
-  drop.test13 = st.unforcedDrop + st.forcedDrop + st.qLimDrop;
-  NS_TEST_EXPECT_MSG_GT (drop.test13, drop.test12, "Test 13 should have more drops than test 12");
-  
-  
+  if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 45, "There should be 45 packet drops due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
+    }
+  else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 76, "There should be 76 bytes dropped due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+    }
+
+
   // test 14: Verify automatic setting of minTh and maxTh. [minTh = maxTh = 0.0, with default LinkBandwidth]
   minTh = maxTh = 0.0; 
   queue = CreateObject<RedQueue> ();
@@ -389,9 +441,19 @@ RedQueueTestCase::RunRedTest (StringValue mode)
                          "Verify that we can actually set the attribute QW");	
   Enqueue (queue, pktSize, 300);
   st = StaticCast<RedQueue> (queue)->GetStats ();
-  drop.test14 = st.unforcedDrop + st.forcedDrop + st.qLimDrop;
-  NS_TEST_EXPECT_MSG_GT (drop.test14, drop.test3, "Test 14 should have more drops than test 3");
-  
+  if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 43, "There should be 43 packet drops due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 215, "There should be 215 packet drops due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
+    }
+  else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be zero bytes dropped due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 298, "There should be 298 bytes dropped due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+    }
+
   
   // test 15: Verify automatic setting of minTh and maxTh. [minTh = maxTh = 0.0, with higher LinkBandwidth]
   minTh = maxTh = 0.0; 
@@ -410,8 +472,18 @@ RedQueueTestCase::RunRedTest (StringValue mode)
                          "Verify that we can actually set the attribute LinkBandwidth");	
   Enqueue (queue, pktSize, 300);
   st = StaticCast<RedQueue> (queue)->GetStats ();
-  drop.test15 = st.unforcedDrop + st.forcedDrop + st.qLimDrop;
-  NS_TEST_EXPECT_MSG_LT (drop.test15, drop.test14, "Test 15 should have less drops than test 14");
+  if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 159, "There should be 159 packet drops due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
+    }
+  else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
+    {
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 6, "There should be 6 bytes droppped due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 290, "There should be 290 bytes dropped due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+    }
 }
 
 void 
