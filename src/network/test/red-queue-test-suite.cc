@@ -274,9 +274,9 @@ RedQueueTestCase::RunRedTest (StringValue mode)
     }
   else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be zero bytes dropped due to probability mark");
-      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
-      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be zero dropped packets due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
 
 
@@ -298,15 +298,15 @@ RedQueueTestCase::RunRedTest (StringValue mode)
   st = StaticCast<RedQueue> (queue)->GetStats ();
   if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 44, "There should be 44 packet drops due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 44, "There should be 44 dropped packets due to probability mark");
       NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
       NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
   else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 75, "There should be 75 bytes dropped due to probability mark");
-      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
-      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 75, "There should be 75 dropped packets due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
 
 
@@ -332,9 +332,9 @@ RedQueueTestCase::RunRedTest (StringValue mode)
     }
   else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be zero bytes dropped due to probability mark");
-      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
-      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be zero dropped packets due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
 
 
@@ -356,15 +356,15 @@ RedQueueTestCase::RunRedTest (StringValue mode)
   st = StaticCast<RedQueue> (queue)->GetStats ();
   if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 34, "There should be 34 packet drops due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 34, "There should be 34 dropped packets due to probability mark");
       NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
       NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
   else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 58, "There should be 58 bytes dropped due to probability mark");
-      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
-      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 58, "There should be 58 dropped packets due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
 
 
@@ -384,15 +384,15 @@ RedQueueTestCase::RunRedTest (StringValue mode)
   st = StaticCast<RedQueue> (queue)->GetStats ();
   if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 29, "There should be 29 packet drops due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 29, "There should be 29 dropped packets due to probability mark");
       NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
       NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
   else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 55, "There should be 55 bytes dropped due to probability mark");
-      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
-      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 55, "There should be 55 dropped packets due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
   
   
@@ -414,15 +414,15 @@ RedQueueTestCase::RunRedTest (StringValue mode)
   st = StaticCast<RedQueue> (queue)->GetStats ();
   if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 45, "There should be 45 packet drops due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 45, "There should be 45 dropped packets due to probability mark");
       NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
       NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
   else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 76, "There should be 76 bytes dropped due to probability mark");
-      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero bytes dropped due to hard mark");
-      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 76, "There should be 76 dropped packets  due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
 
 
@@ -443,15 +443,15 @@ RedQueueTestCase::RunRedTest (StringValue mode)
   st = StaticCast<RedQueue> (queue)->GetStats ();
   if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 43, "There should be 43 packet drops due to probability mark");
-      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 215, "There should be 215 packet drops due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 43, "There should be 43 dropped packets due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 215, "There should be 215 dropped packets due to hard mark");
       NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
   else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be zero bytes dropped due to probability mark");
-      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 298, "There should be 298 bytes dropped due to hard mark");
-      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 0, "There should be zero dropped packets due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 298, "There should be 298 dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
 
   
@@ -474,15 +474,15 @@ RedQueueTestCase::RunRedTest (StringValue mode)
   st = StaticCast<RedQueue> (queue)->GetStats ();
   if (queue->GetMode () == RedQueue::QUEUE_MODE_PACKETS)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 159, "There should be 159 packet drops due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 159, "There should be 159 dropped packets due to probability mark");
       NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 0, "There should be zero dropped packets due to hard mark");
       NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
   else if (queue->GetMode () == RedQueue::QUEUE_MODE_BYTES)
     {
-      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 6, "There should be 6 bytes droppped due to probability mark");
-      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 290, "There should be 290 bytes dropped due to hard mark");
-      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero bytes dropped due to queue full");
+      NS_TEST_EXPECT_MSG_EQ (st.unforcedDrop, 6, "There should be 6 dropped packets due to probability mark");
+      NS_TEST_EXPECT_MSG_EQ (st.forcedDrop, 290, "There should be 290 dropped packets due to hard mark");
+      NS_TEST_EXPECT_MSG_EQ (st.qLimDrop, 0, "There should be zero dropped packets due to queue full");
     }
 }
 
