@@ -175,16 +175,16 @@ main (int argc, char *argv[])
 {
   LogComponentEnable ("RedQueue", LOG_LEVEL_INFO);
 
-  uint32_t redTest;
-  std::string redLinkDataRate = "1.5Mbps";
-  std::string redLinkDelay = "20ms";
+  uint32_t aredTest;
+  std::string aredLinkDataRate = "1.5Mbps";
+  std::string aredLinkDelay = "20ms";
 
   std::string pathOut;
   bool writeForPlot = false;
   bool writePcap = false;
   bool flowMonitor = false;
 
-  bool printRedStats = true;
+  bool printAredStats = true;
 
   global_start_time = 0.0;
   sink_start_time = global_start_time;
@@ -194,18 +194,18 @@ main (int argc, char *argv[])
   client_stop_time = global_stop_time - 2.0;
 
   // Configuration and command line parameter parsing
-  redTest = 1;
+  aredTest = 1;
   // Will only save in the directory if enable opts below
   pathOut = "."; // Current directory
   CommandLine cmd;
-  cmd.AddValue ("testNumber", "Run test 1, 2, 6, 7, 8, 9, 10, 12, 13, 14 or 15", redTest);
+  cmd.AddValue ("testNumber", "Run test 1, 2, 6, 7, 8, 9, 10, 12, 13, 14 or 15", aredTest);
   cmd.AddValue ("pathOut", "Path to save results from --writeForPlot/--writePcap/--writeFlowMonitor", pathOut);
   cmd.AddValue ("writeForPlot", "<0/1> to write results for plot (gnuplot)", writeForPlot);
   cmd.AddValue ("writePcap", "<0/1> to write results in pcapfile", writePcap);
   cmd.AddValue ("writeFlowMonitor", "<0/1> to enable Flow Monitor and write their results", flowMonitor);
 
   cmd.Parse (argc, argv);
-  if ( (redTest != 1) && (redTest != 2) && (redTest != 6) && (redTest != 7) && (redTest != 8) && (redTest != 9) && (redTest != 10) && (redTest != 12) && (redTest != 13) && (redTest != 14) && (redTest != 15) )
+  if ( (aredTest != 1) && (aredTest != 2) && (aredTest != 6) && (aredTest != 7) && (aredTest != 8) && (aredTest != 9) && (aredTest != 10) && (aredTest != 12) && (aredTest != 13) && (aredTest != 14) && (aredTest != 15) )
     {
       std::cout << "Invalid test number. Supported tests are 1, 2, 6, 7, 8, 9, 10, 12, 13, 14 or 15" << std::endl;
       exit (1);
@@ -246,11 +246,11 @@ main (int argc, char *argv[])
   Config::SetDefault ("ns3::RedQueue::LInterm", DoubleValue (10));
   Config::SetDefault ("ns3::RedQueue::QueueLimit", UintegerValue (1000));
 
-  if (redTest == 1) // test 1:
+  if (aredTest == 1) // test 1:
     {
       Config::SetDefault ("ns3::RedQueue::QueueLimit", UintegerValue (25));
     }
-  else if (redTest == 2) // test 2: Adaptive is set to TRUE; MinTh, MaxTh and QW are automatically set
+  else if (aredTest == 2) // test 2: Adaptive is set to TRUE; MinTh, MaxTh and QW are automatically set
     {
       Config::SetDefault ("ns3::RedQueue::QW", DoubleValue (0.0));
       Config::SetDefault ("ns3::RedQueue::MinTh", DoubleValue (0));
@@ -258,27 +258,27 @@ main (int argc, char *argv[])
       Config::SetDefault ("ns3::RedQueue::Adaptive", BooleanValue (true));
       Config::SetDefault ("ns3::RedQueue::QueueLimit", UintegerValue (25));
     }
-  else if (redTest == 7) // test 7:
+  else if (aredTest == 7) // test 7:
     {
       Config::SetDefault ("ns3::RedQueue::QW", DoubleValue (0.0));
     }
-  else if (redTest == 8) // test 8:
+  else if (aredTest == 8) // test 8:
     {
       Config::SetDefault ("ns3::RedQueue::MinTh", DoubleValue (0));
       Config::SetDefault ("ns3::RedQueue::MaxTh", DoubleValue (0));
     }
-  else if (redTest == 9) // test 9:
+  else if (aredTest == 9) // test 9:
     {
       Config::SetDefault ("ns3::RedQueue::Adaptive", BooleanValue (true));
     }
-  else if (redTest == 10) // test 10:
+  else if (aredTest == 10) // test 10:
     {
       Config::SetDefault ("ns3::RedQueue::QW", DoubleValue (0.0));
       Config::SetDefault ("ns3::RedQueue::MinTh", DoubleValue (0));
       Config::SetDefault ("ns3::RedQueue::MaxTh", DoubleValue (0));
       Config::SetDefault ("ns3::RedQueue::Adaptive", BooleanValue (true));
     }
-  else if (redTest == 12) // test 12:
+  else if (aredTest == 12) // test 12:
     {
       Config::SetDefault ("ns3::RedQueue::QW", DoubleValue (0.0));
       Config::SetDefault ("ns3::RedQueue::MinTh", DoubleValue (0));
@@ -286,11 +286,11 @@ main (int argc, char *argv[])
       Config::SetDefault ("ns3::RedQueue::Adaptive", BooleanValue (true));
       Config::SetDefault ("ns3::RedQueue::TargetDelay", TimeValue (Seconds (0.2)));
     }
-  else if (redTest == 13) // test 13:
+  else if (aredTest == 13) // test 13:
     {
       Config::SetDefault ("ns3::RedQueue::QueueLimit", UintegerValue (100));
     }
-  else if (redTest == 14) // test 14:
+  else if (aredTest == 14) // test 14:
     {
       Config::SetDefault ("ns3::RedQueue::QW", DoubleValue (0.0));
       Config::SetDefault ("ns3::RedQueue::MinTh", DoubleValue (0));
@@ -298,7 +298,7 @@ main (int argc, char *argv[])
       Config::SetDefault ("ns3::RedQueue::Adaptive", BooleanValue (true));
       Config::SetDefault ("ns3::RedQueue::QueueLimit", UintegerValue (100));
     }
-  else if (redTest == 15) // test 15:
+  else if (aredTest == 15) // test 15:
     {
       Config::SetDefault ("ns3::RedQueue::QW", DoubleValue (-1.0));
       Config::SetDefault ("ns3::RedQueue::MinTh", DoubleValue (0));
@@ -324,11 +324,11 @@ main (int argc, char *argv[])
   p2p.SetChannelAttribute ("Delay", StringValue ("3ms"));
   NetDeviceContainer devn1n2 = p2p.Install (n1n2);
 
-  p2p.SetQueue ("ns3::RedQueue", // only backbone link has RED queue
-                "LinkBandwidth", StringValue (redLinkDataRate),
-                "LinkDelay", StringValue (redLinkDelay));
-  p2p.SetDeviceAttribute ("DataRate", StringValue (redLinkDataRate));
-  p2p.SetChannelAttribute ("Delay", StringValue (redLinkDelay));
+  p2p.SetQueue ("ns3::RedQueue", // only backbone link has ARED queue
+                "LinkBandwidth", StringValue (aredLinkDataRate),
+                "LinkDelay", StringValue (aredLinkDelay));
+  p2p.SetDeviceAttribute ("DataRate", StringValue (aredLinkDataRate));
+  p2p.SetChannelAttribute ("Delay", StringValue (aredLinkDelay));
   NetDeviceContainer devn2n3 = p2p.Install (n2n3);
 
   p2p.SetQueue ("ns3::DropTailQueue");
@@ -341,7 +341,7 @@ main (int argc, char *argv[])
   p2p.SetChannelAttribute ("Delay", StringValue ("5ms"));
   NetDeviceContainer devn3n5 = p2p.Install (n3n5);
 
-  if (redTest == 13 || redTest == 14 || redTest == 15)
+  if (aredTest == 13 || aredTest == 14 || aredTest == 15)
     {
       p2p.SetDeviceAttribute ("DataRate", StringValue ("10Mbps"));
       p2p.SetChannelAttribute ("Delay", StringValue ("0ms"));
@@ -349,10 +349,10 @@ main (int argc, char *argv[])
       p2p.SetDeviceAttribute ("DataRate", StringValue ("10Mbps"));
       p2p.SetChannelAttribute ("Delay", StringValue ("1ms"));
 
-      p2p.SetQueue ("ns3::RedQueue", // only backbone link has RED queue
-                    "LinkBandwidth", StringValue (redLinkDataRate),
+      p2p.SetQueue ("ns3::RedQueue", // only backbone link has ARED queue
+                    "LinkBandwidth", StringValue (aredLinkDataRate),
                     "LinkDelay", StringValue ("100ms"));
-      p2p.SetDeviceAttribute ("DataRate", StringValue (redLinkDataRate));
+      p2p.SetDeviceAttribute ("DataRate", StringValue (aredLinkDataRate));
       p2p.SetChannelAttribute ("Delay", StringValue ("100ms"));
 
       p2p.SetDeviceAttribute ("DataRate", StringValue ("10Mbps"));
@@ -361,7 +361,7 @@ main (int argc, char *argv[])
       p2p.SetDeviceAttribute ("DataRate", StringValue ("10Mbps"));
       p2p.SetChannelAttribute ("Delay", StringValue ("3ms"));
     }
-  else if (redTest == 6 || redTest == 7 || redTest == 8 || redTest == 9 || redTest == 10 || redTest == 12)
+  else if (aredTest == 6 || aredTest == 7 || aredTest == 8 || aredTest == 9 || aredTest == 10 || aredTest == 12)
     {
       p2p.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
       p2p.SetChannelAttribute ("Delay", StringValue ("2ms"));
@@ -369,11 +369,11 @@ main (int argc, char *argv[])
       p2p.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
       p2p.SetChannelAttribute ("Delay", StringValue ("3ms"));
 
-      p2p.SetQueue ("ns3::RedQueue", // only backbone link has RED queue
+      p2p.SetQueue ("ns3::RedQueue", // only backbone link has ARED queue
                     "LinkBandwidth", StringValue ("15Mbps"),
-                    "LinkDelay", StringValue (redLinkDelay));
+                    "LinkDelay", StringValue (aredLinkDelay));
       p2p.SetDeviceAttribute ("DataRate", StringValue ("15Mbps"));
-      p2p.SetChannelAttribute ("Delay", StringValue (redLinkDelay));
+      p2p.SetChannelAttribute ("Delay", StringValue (aredLinkDelay));
 
       p2p.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
       p2p.SetChannelAttribute ("Delay", StringValue ("4ms"));
@@ -403,13 +403,13 @@ main (int argc, char *argv[])
   // Set up the routing
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
-  BuildAppsTest (redTest);
+  BuildAppsTest (aredTest);
 
   if (writePcap)
     {
       PointToPointHelper ptp;
       std::stringstream stmp;
-      stmp << pathOut << "/red";
+      stmp << pathOut << "/ared";
       ptp.EnablePcapAll (stmp.str ().c_str ());
     }
 
@@ -422,8 +422,8 @@ main (int argc, char *argv[])
 
   if (writeForPlot)
     {
-      filePlotQueue << pathOut << "/" << "red-queue.plotme";
-      filePlotQueueAvg << pathOut << "/" << "red-queue_avg.plotme";
+      filePlotQueue << pathOut << "/" << "ared-queue.plotme";
+      filePlotQueueAvg << pathOut << "/" << "ared-queue_avg.plotme";
 
       remove (filePlotQueue.str ().c_str ());
       remove (filePlotQueueAvg.str ().c_str ());
@@ -438,7 +438,7 @@ main (int argc, char *argv[])
   Ptr<PointToPointNetDevice> nd = StaticCast<PointToPointNetDevice> (devn2n3.Get (0));
   RedQueue::Stats st = StaticCast<RedQueue> (nd->GetQueue ())->GetStats ();
 
-  if (redTest == 1)
+  if (aredTest == 1)
     {
       if (st.unforcedDrop < 4 || st.unforcedDrop > 6)
         {
@@ -456,7 +456,7 @@ main (int argc, char *argv[])
           exit (-1);
         }
     }
-  else if (redTest == 2)
+  else if (aredTest == 2)
     {
       if (st.unforcedDrop < 10 || st.unforcedDrop > 16)
         {
@@ -474,7 +474,7 @@ main (int argc, char *argv[])
           exit (-1);
         }
     }
-  else if (redTest == 6)
+  else if (aredTest == 6)
     {
       if (st.unforcedDrop < 50 || st.unforcedDrop > 126)
         {
@@ -492,7 +492,7 @@ main (int argc, char *argv[])
           exit (-1);
         }
     }
-  else if (redTest == 7)
+  else if (aredTest == 7)
     {
       if (st.unforcedDrop < 46 || st.unforcedDrop > 91)
         {
@@ -510,7 +510,7 @@ main (int argc, char *argv[])
           exit (-1);
         }
     }
-  else if (redTest == 8)
+  else if (aredTest == 8)
     {
       if (st.unforcedDrop < 130 || st.unforcedDrop > 179)
         {
@@ -528,7 +528,7 @@ main (int argc, char *argv[])
           exit (-1);
         }
     }
-  else if (redTest == 9)
+  else if (aredTest == 9)
     {
       if (st.unforcedDrop < 64 || st.unforcedDrop > 94)
         {
@@ -546,7 +546,7 @@ main (int argc, char *argv[])
           exit (-1);
         }
     }
-  else if (redTest == 10)
+  else if (aredTest == 10)
     {
       if (st.unforcedDrop < 99 || st.unforcedDrop > 185)
         {
@@ -564,7 +564,7 @@ main (int argc, char *argv[])
           exit (-1);
         }
     }
-  else if (redTest == 12)
+  else if (aredTest == 12)
     {
       if (st.unforcedDrop != 275)
         {
@@ -582,7 +582,7 @@ main (int argc, char *argv[])
           exit (-1);
         }
     }
-  else if (redTest == 13)
+  else if (aredTest == 13)
     {
       if (st.unforcedDrop < 32 || st.unforcedDrop > 60)
         {
@@ -600,7 +600,7 @@ main (int argc, char *argv[])
           exit (-1);
         }
     }
-  else if (redTest == 14)
+  else if (aredTest == 14)
     {
       if (st.unforcedDrop < 99 || st.unforcedDrop > 185)
         {
@@ -618,7 +618,7 @@ main (int argc, char *argv[])
           exit (-1);
         }
     }
-  else if (redTest == 15)
+  else if (aredTest == 15)
     {
       if (st.unforcedDrop < 99 || st.unforcedDrop > 185)
         {
@@ -640,14 +640,14 @@ main (int argc, char *argv[])
   if (flowMonitor)
     {
       std::stringstream stmp;
-      stmp << pathOut << "/red.flowmon";
+      stmp << pathOut << "/ared.flowmon";
 
       flowmon->SerializeToXmlFile (stmp.str ().c_str (), false, false);
     }
 
-  if (printRedStats)
+  if (printAredStats)
     {
-      std::cout << "*** RED stats from Node 2 queue ***" << std::endl;
+      std::cout << "*** ARED stats from Node 2 queue ***" << std::endl;
       std::cout << "\t " << st.unforcedDrop << " drops due prob mark" << std::endl;
       std::cout << "\t " << st.forcedDrop << " drops due hard mark" << std::endl;
       std::cout << "\t " << st.qLimDrop << " drops due queue full" << std::endl;
