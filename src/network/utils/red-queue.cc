@@ -488,23 +488,22 @@ RedQueue::InitializeParams (void)
       m_qW = 1.0 - std::exp (-10.0 / m_ptc);
     }
 
-  if (m_minTh == 0) 
+  if (m_minTh == 0 && m_maxTh == 0) 
     {
       m_minTh = 5.0;
+
       // set m_minTh to max(m_minTh, targetqueue/2.0) [Ref: http://www.icir.org/floyd/papers/adaptiveRed.pdf]
       double targetqueue = m_targetDelay.GetSeconds() * m_ptc;
+
       if (m_minTh < targetqueue / 2.0 )
         {
           m_minTh = targetqueue / 2.0;
         }
       if (GetMode () == QUEUE_MODE_BYTES)
         {
-          m_minTh = m_minTh * m_meanPktSize; 
+          m_minTh = m_minTh * m_meanPktSize;
         }
-    }
 
-  if (m_maxTh == 0)
-    {
       // set m_maxTh to three times m_minTh [Ref: http://www.icir.org/floyd/papers/adaptiveRed.pdf]
       m_maxTh = 3 * m_minTh;
     }
