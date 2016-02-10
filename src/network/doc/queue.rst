@@ -69,9 +69,9 @@ Adaptive Random Early Detection
 ###############################
 
 Adaptive Random Early Detection (ARED) is a queue variant of RED that aims
-to (i) automatically set the Queue weight, MinTh and MaxTh in RED and
-(ii) adapt maximum drop probability in RED. The model in ns-3 is a port of
-Sally Floyd's ns-2 ARED model.
+to (i) automatically set the Queue weight, MinTh and MaxTh and (ii) adapt maximum 
+drop probability. The model in ns-3 contains implementation of both (i) and (ii),
+and is a port of Sally Floyd's ns-2 ARED model.
 
 References
 ==========
@@ -144,9 +144,9 @@ policies:
 
 In addition to RED attributes, ARED queue requires following attributes:
 
-* Adaptive mode
+* Adaptive (can be true or false. Default: false)
 * Target Delay
-* Interval
+* Interval 
 * LastSet (time)
 * Top
 * Bottom
@@ -184,12 +184,12 @@ Examples
 
 The drop-tail queue is used in several examples, such as 
 ``examples/udp/udp-echo.cc``.  The RED queue example is found at
-``src/network/examples/red-tests.cc``. ARED queue example can be found at
-``src/network/examples/adaptive-red-tests.cc``.
+``src/network/examples/red-tests.cc``. ARED queue examples can be found at:
+``src/network/examples/adaptive-red-tests.cc`` and 
+``src/network/examples/red_vs_ared.cc``
 
 Validation
 **********
 
 The RED model has been validated and the report is currently stored
-at: https://github.com/downloads/talau/ns-3-tcp-red/report-red-ns3.pdf 
-
+at: https://github.com/downloads/talau/ns-3-tcp-red/report-red-ns3.pdf
