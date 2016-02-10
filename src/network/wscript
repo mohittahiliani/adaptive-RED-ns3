@@ -77,6 +77,7 @@ def build(bld):
         'test/packet-metadata-test.cc',
         'test/pcap-file-test-suite.cc',
         'test/red-queue-test-suite.cc',
+        'test/adaptive-red-queue-test-suite.cc',
         'test/sequence-number-test-suite.cc',
         'test/packet-socket-apps-test-suite.cc',
         ]

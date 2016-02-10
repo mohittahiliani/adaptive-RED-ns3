@@ -511,10 +511,9 @@ RedQueue::InitializeParams (void)
   if (m_bottom == 0)
     {
       m_bottom = 0.01;
-      // Set bottom to at most 1/W, for W the delay-bandwidth
-      // product in packets for a connection with this bandwidth,
-      // 1000-byte packets, and 100 ms RTTs.
-      // So W = 0.1 * m_linkBandwidth.GetBitRate () / 8000
+      // Set bottom to at most 1/W, where W is the delay-bandwidth
+      // product in packets for a connection.
+      // So W = m_linkBandwidth.GetBitRate () / (8.0 * m_meanPktSize * m_rtt.GetSeconds())
       double bottom1 = (8.0 * m_meanPktSize * m_rtt.GetSeconds()) / m_linkBandwidth.GetBitRate();
       if (bottom1 < m_bottom)
         {
