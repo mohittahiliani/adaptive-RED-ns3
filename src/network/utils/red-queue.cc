@@ -497,6 +497,10 @@ RedQueue::InitializeParams (void)
         {
           m_minTh = targetqueue / 2.0;
         }
+      if (GetMode () == QUEUE_MODE_BYTES)
+        {
+          m_minTh = m_minTh * m_meanPktSize; 
+        }
     }
 
   if (m_maxTh == 0)
