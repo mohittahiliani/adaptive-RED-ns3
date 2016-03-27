@@ -1,9 +1,3 @@
-
-    Adaptive RED implementation in ns-3.24
-    --------------------------------------
-
-Following things are provided with this implementation:
-
-1. Adaptive RED algorithm (src/network/utils)
-2. Examples to get started (src/network/examples)
-3. Test cases (src/network/test)
+Adaptive RED (ARED) has been merged in the main tree of ns-3 since ns-3.25 release.
+This repository is obsolete and is no longer maintained.
+Kindly download ns-3.25 to simulate ARED: https://www.nsnam.org/ns-3-25/
