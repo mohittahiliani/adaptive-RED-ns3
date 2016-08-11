@@ -1,3 +1,5 @@
 Adaptive RED (ARED) has been merged in the main tree of ns-3 since ns-3.25 release.
 This repository is obsolete and is no longer maintained.
 Kindly download ns-3.25 to simulate ARED: https://www.nsnam.org/ns-3-25/
+or clone ns-3-dev: https://code.nsnam.org/ns-3-dev
+
